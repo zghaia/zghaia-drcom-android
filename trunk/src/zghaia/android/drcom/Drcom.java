@@ -22,6 +22,9 @@ import android.widget.Toast;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,176 +46,68 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 public class Drcom extends Activity {
+	private Button bLogin,bLogout;
+	private NotificationManager mDrcom; 
+	private int iDrcom; 
+	private Notification nDrcom; 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
+        bLogin=(Button)findViewById(R.id.login);
+        bLogout=(Button)findViewById(R.id.logout);
+        Button bSetting=(Button)findViewById(R.id.setting);
+        Button bAbout=(Button)findViewById(R.id.about);
         //set SharedPreferences object for store and get data
-        SharedPreferences pDrcom = getSharedPreferences("Drcom",0);
+        final SharedPreferences pDrcom = getSharedPreferences("Drcom",0);
+        final SharedPreferences.Editor eDrcom=pDrcom.edit();
+        //get the Dr.com data
+        final String address=pDrcom.getString("address","");
+        final String user=pDrcom.getString("user","");
+        final String password=pDrcom.getString("password","");
         
-        //init the Dr.com data
-        final String sAddress=pDrcom.getString("Paddress","");
-        final String sUser=pDrcom.getString("Puser","");
-        final String sPassword=pDrcom.getString("Ppassword","");
+        //Notification Icon will appear in Statusbar
+        showNotification();
+        // state
+        switchState(pDrcom.getInt("state",-1));
         
         //call Login function
-        Button bLogin=(Button)findViewById(R.id.login);
         bLogin.setOnClickListener(new OnClickListener() {
         	@Override
         	public void onClick(View v){
-        		String loginServer="http://"+sAddress+"/";
-        		BufferedReader in = null;
-        		
-        		try {
-        			HttpClient loginClient = new DefaultHttpClient();
-        			HttpPost loginRequest = new HttpPost(loginServer);
-        			List<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-        			postParameters.add(new BasicNameValuePair("DDDDD", sUser));
-        			postParameters.add(new BasicNameValuePair("upass", sPassword));
-        			postParameters.add(new BasicNameValuePair("0MKKey", "%B5%C7%C2%BC+Login"));
-        			UrlEncodedFormEntity formEntity = null;
-					try {
-						formEntity = new UrlEncodedFormEntity(postParameters);
-					} catch (UnsupportedEncodingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-        			loginRequest.setEntity(formEntity);
-        			HttpResponse response = null;
-					try {
-						response = loginClient.execute(loginRequest);
-					} catch (ClientProtocolException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-        			try {
-						in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-					} catch (IllegalStateException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-        			StringBuffer sb = new StringBuffer("");
-        			String line = "";
-        			String NL = System.getProperty("line.separator");
-        			try {
-						while ((line = in.readLine()) != null) {
-							sb.append(line + NL);
-						}
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-        			try {
-						in.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-        			String page = sb.toString();
-    				System.out.println(page);
-    				Toast.makeText( Drcom.this,"登录成功",Toast.LENGTH_LONG).show();
-        			} finally {
-        				if (in != null) {
-        					try {
-        						in.close();
-        					} catch (IOException e) {
-        						e.printStackTrace();
-        						Toast.makeText( Drcom.this,"登录失败",Toast.LENGTH_LONG).show();
-        					}
-        				}
-        				
-        			}
-        		
+        		String server="http://"+address+"/";
+        		login(server,user,password);	
+        		eDrcom.putInt("state", 1);
+        		eDrcom.commit();
+        		switchState(pDrcom.getInt("state",-1));
         	}
         });
         
         //call Logout function
-        Button bLogout=(Button)findViewById(R.id.logout);
         bLogout.setOnClickListener(new OnClickListener() {
         	@Override
         	public void onClick(View v){
-        		String logoutServer="http://"+sAddress+"/F.htm";
-        		BufferedReader in=null;
-        			try {//http get
-        				HttpClient LogoutClient = new DefaultHttpClient();
-        				HttpGet LogoutRequest = new HttpGet();
-        				try {
-							LogoutRequest.setURI(new URI(logoutServer));
-						} catch (URISyntaxException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-        				HttpResponse LogoutResponse = null;
-						try {
-							LogoutResponse = LogoutClient.execute(LogoutRequest);
-						} catch (ClientProtocolException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-        				//get Response  Content
-        				try {
-							in = new BufferedReader(new InputStreamReader(LogoutResponse.getEntity().getContent()));
-						} catch (IllegalStateException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-        				StringBuffer sb = new StringBuffer("");
-        				String line = "";
-        				String NL = System.getProperty("line.separator");
-        				//print the Response  Content
-        				try {
-							while ((line = in.readLine()) != null) {
-								sb.append(line + NL);
-							}
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-        				try {
-							in.close();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-        				String page = sb.toString();
-        				System.out.println(page);
-        				Toast.makeText( Drcom.this,"注销成功",Toast.LENGTH_LONG).show();
-        				//error control
-        			} finally {
-        				if (in != null) {
-        					try {
-        						in.close();
-        					} catch (IOException e) {
-        						e.printStackTrace();
-        						Toast.makeText( Drcom.this,"注销失败",Toast.LENGTH_LONG).show();
-        					}
-        				}
-        				
-        			}
-        		
-        		
+        		String server="http://"+address+"/F.htm";
+        		logout(server);
+        		eDrcom.putInt("state", 0);
+        		eDrcom.commit();
+        		switchState(pDrcom.getInt("state",-1));
         	}
         });
         
         //call Setting Activity
-        Button bSetting=(Button)findViewById(R.id.setting);
         bSetting.setOnClickListener(new OnClickListener() {
         	@Override
         	public void onClick(View v){
+        		if(pDrcom.getInt("state",-1)==1){
+        			String server="http://"+address+"/F.htm";
+            		logout(server);
+            		eDrcom.putInt("state", 0);
+            		eDrcom.commit();
+            		switchState(pDrcom.getInt("state",-1));
+        		}
         		Intent iSetting = new Intent();
         		iSetting.setClass(Drcom.this, Setting.class);
         		startActivity(iSetting);
@@ -220,7 +115,6 @@ public class Drcom extends Activity {
         });
         
         //call About Activity
-        Button bAbout=(Button)findViewById(R.id.about);
         bAbout.setOnClickListener(new OnClickListener() {
         	@Override
         	public void onClick(View v){
@@ -229,5 +123,173 @@ public class Drcom extends Activity {
         		startActivity(iAbout);
         	}
         });
+        
+    }
+    
+    //notification 
+    protected void showNotification() {
+    	mDrcom = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+    	nDrcom = new Notification(R.drawable.icon, "Dr.com", System.currentTimeMillis());
+    	PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(this, Drcom.class), 0);
+    	nDrcom.setLatestEventInfo(this, "Dr.com", "Dr.com", intent);
+    	mDrcom.notify( iDrcom, nDrcom); 
+    }
+    
+    //switch state
+    public void switchState(int state){
+        switch(state){
+        case -1:Toast.makeText( this,"需要设置",Toast.LENGTH_LONG).show();
+        		bLogin.setEnabled(false);
+        		bLogout.setEnabled(false);
+        		break;
+        case 0 :Toast.makeText( this,"已经注销",Toast.LENGTH_LONG).show();
+				bLogin.setEnabled(true);
+				bLogout.setEnabled(false);
+				break;
+        case 1 :Toast.makeText( this,"已经登录",Toast.LENGTH_LONG).show();
+				bLogin.setEnabled(false);
+				bLogout.setEnabled(true);
+				break;
+		default:Toast.makeText( this,"未知错误",Toast.LENGTH_LONG).show();
+				bLogin.setEnabled(false);
+				bLogout.setEnabled(false);
+        }
+    }
+    
+    // login function
+    public void login(String server,String user,String password){
+    	BufferedReader in = null;
+		try {
+			HttpClient client = new DefaultHttpClient();
+			HttpPost request = new HttpPost(server);
+			List<NameValuePair> postParameters = new ArrayList<NameValuePair>();
+			postParameters.add(new BasicNameValuePair("DDDDD", user));
+			postParameters.add(new BasicNameValuePair("upass", password));
+			postParameters.add(new BasicNameValuePair("0MKKey", "%B5%C7%C2%BC+Login"));
+			UrlEncodedFormEntity formEntity = null;
+			try {
+				formEntity = new UrlEncodedFormEntity(postParameters);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			request.setEntity(formEntity);
+			HttpResponse response = null;
+			try {
+				response = client.execute(request);
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			StringBuffer sb = new StringBuffer("");
+			String line = "";
+			String NL = System.getProperty("line.separator");
+			try {
+				while ((line = in.readLine()) != null) {
+					sb.append(line + NL);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				in.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			String page = sb.toString();
+			System.out.println(page);
+			Toast.makeText( this,"登录成功",Toast.LENGTH_LONG).show();
+			} finally {
+				if (in != null) {
+					try {
+						in.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+						Toast.makeText( this,"登录失败",Toast.LENGTH_LONG).show();
+					}
+				}
+				
+			}
+    }
+    
+    //logout function
+    public void logout(String server){
+    	BufferedReader in=null;
+		try {//HttpGet
+			HttpClient client = new DefaultHttpClient();
+			HttpGet request = new HttpGet();
+			try {
+				request.setURI(new URI(server));
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			HttpResponse response = null;
+			try {
+				response = client.execute(request);
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//get Response  Content
+			try {
+				in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			StringBuffer sb = new StringBuffer("");
+			String line = "";
+			String NL = System.getProperty("line.separator");
+			//print the Response  Content
+			try {
+				while ((line = in.readLine()) != null) {
+					sb.append(line + NL);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				in.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			String page = sb.toString();
+			System.out.println(page);
+			Toast.makeText( this,"注销成功",Toast.LENGTH_LONG).show();
+			//error control
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+					Toast.makeText( this,"注销失败",Toast.LENGTH_LONG).show();
+				}
+			}
+			
+		}
     }
 }

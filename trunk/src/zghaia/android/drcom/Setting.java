@@ -34,7 +34,7 @@ public class Setting extends Activity {
         setContentView(R.layout.setting);
         
         //set SharedPreferences object for store and get data
-        SharedPreferences pDrcom = getSharedPreferences("Drcom",0);
+        final SharedPreferences pDrcom = getSharedPreferences("Drcom",0);
         final SharedPreferences.Editor eDrcom=pDrcom.edit();
         
         //get object of EditText
@@ -42,21 +42,28 @@ public class Setting extends Activity {
         tUser=(EditText)findViewById(R.id.user);
         tPassword=(EditText)findViewById(R.id.password);
         
-        //init the EditText text
-        tAddress.setText(pDrcom.getString("Paddress",""));
-        tUser.setText(pDrcom.getString("Puser",""));
-        tPassword.setText(pDrcom.getString("Ppassword",""));
+        //show the EditText text
+        tAddress.setText(pDrcom.getString("address",""));
+        tUser.setText(pDrcom.getString("user",""));
+        tPassword.setText(pDrcom.getString("password",""));
         
         // save address,user,password data
         bSave=(Button)findViewById(R.id.save);
         bSave.setOnClickListener(new OnClickListener() {
         	@Override
         	public void onClick(View v){
-        		eDrcom.putString("Paddress", tAddress.getText().toString());
-        		eDrcom.putString("Puser", tUser.getText().toString());
-        		eDrcom.putString("Ppassword", tPassword.getText().toString());
-        		eDrcom.commit();
-        		Toast.makeText( Setting.this,"保存成功",Toast.LENGTH_LONG).show();
+        		if((tAddress.toString().equals(""))||
+                   (tUser.getText().toString().equals(""))||
+                   (tPassword.getText().toString().equals(""))){
+        			Toast.makeText( Setting.this,"输入有空",Toast.LENGTH_LONG).show();
+        		}else{
+        			eDrcom.putString("address", tAddress.getText().toString());
+        			eDrcom.putString("user", tUser.getText().toString());
+        			eDrcom.putString("password", tPassword.getText().toString());
+        			eDrcom.putInt("state", 0);
+        			eDrcom.commit();
+        			Toast.makeText( Setting.this,"保存成功",Toast.LENGTH_LONG).show();
+        		}
         	}
         });
         
@@ -65,15 +72,20 @@ public class Setting extends Activity {
         bClear.setOnClickListener(new OnClickListener() {
         	@Override
         	public void onClick(View v){
-        		eDrcom.putString("Paddress", "");
-        		eDrcom.putString("Puser", "");
-        		eDrcom.putString("Ppassword", "");
+        		eDrcom.putString("address", "");
+        		eDrcom.putString("user", "");
+        		eDrcom.putString("password", "");
+        		eDrcom.putInt("state", -1);
         		eDrcom.commit();
+        		//clear the EditText text
+        		tAddress.setText(pDrcom.getString("address",""));
+        	    tUser.setText(pDrcom.getString("user",""));
+        	    tPassword.setText(pDrcom.getString("password",""));
         		Toast.makeText( Setting.this,"清除成功",Toast.LENGTH_LONG).show();
         	}
         });
         
-        //back Drcom Activity
+        //back Dr.com Activity
         Button bBack=(Button)findViewById(R.id.back);
         bBack.setOnClickListener(new OnClickListener() {
         	@Override
@@ -83,6 +95,6 @@ public class Setting extends Activity {
         		startActivity(iDrcom);
         	}
         });
-        
+ 
     }
 }

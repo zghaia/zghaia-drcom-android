@@ -27,7 +27,7 @@ public class About extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about);
-        
+        //go to update page
         Button bUpdate=(Button)findViewById(R.id.update);
         bUpdate.setOnClickListener(new OnClickListener(){
         	@Override
