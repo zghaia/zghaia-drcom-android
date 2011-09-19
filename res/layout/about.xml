@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <TableLayout android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+        <ImageView android:layout_height="wrap_content" android:src="@drawable/icon" android:layout_width="wrap_content"></ImageView>
+        <TextView android:layout_width="wrap_content" android:text="@string/name" android:layout_height="60dip"></TextView>
+        <TextView android:layout_width="wrap_content" android:layout_height="60dip" android:text="@string/author"></TextView>
+        <TextView android:layout_width="wrap_content" android:layout_height="60dip" android:text="@string/version"></TextView>
+        <Button android:layout_width="wrap_content" android:layout_height="60dip" android:id="@+id/update" android:text="@string/update"></Button>
+    </TableLayout>
+
