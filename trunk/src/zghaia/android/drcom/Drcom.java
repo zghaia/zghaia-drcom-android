@@ -47,33 +47,28 @@ import org.apache.http.message.BasicNameValuePair;
 
 public class Drcom extends Activity {
 	private Button bLogin,bLogout;
-	private NotificationManager mDrcom; 
-	private int iDrcom; 
-	private Notification nDrcom; 
+	private final SharedPreferences pDrcom = getSharedPreferences("Drcom",0);
+	private final SharedPreferences.Editor eDrcom=pDrcom.edit();
+	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        bLogin=(Button)findViewById(R.id.login);
-        bLogout=(Button)findViewById(R.id.logout);
-        Button bSetting=(Button)findViewById(R.id.setting);
-        Button bAbout=(Button)findViewById(R.id.about);
-        //set SharedPreferences object for store and get data
-        final SharedPreferences pDrcom = getSharedPreferences("Drcom",0);
-        final SharedPreferences.Editor eDrcom=pDrcom.edit();
         //get the Dr.com data
         final String address=pDrcom.getString("address","");
         final String user=pDrcom.getString("user","");
         final String password=pDrcom.getString("password","");
         
-        //Notification Icon will appear in Statusbar
+        //Notification Icon will appear in Status bar
         showNotification();
+        
         // state
         switchState(pDrcom.getInt("state",-1));
         
         //call Login function
+        bLogin=(Button)findViewById(R.id.login);
         bLogin.setOnClickListener(new OnClickListener() {
         	@Override
         	public void onClick(View v){
@@ -86,6 +81,7 @@ public class Drcom extends Activity {
         });
         
         //call Logout function
+        bLogout=(Button)findViewById(R.id.logout);
         bLogout.setOnClickListener(new OnClickListener() {
         	@Override
         	public void onClick(View v){
@@ -98,23 +94,22 @@ public class Drcom extends Activity {
         });
         
         //call Setting Activity
+        Button bSetting=(Button)findViewById(R.id.setting);
         bSetting.setOnClickListener(new OnClickListener() {
         	@Override
         	public void onClick(View v){
         		if(pDrcom.getInt("state",-1)==1){
-        			String server="http://"+address+"/F.htm";
-            		logout(server);
-            		eDrcom.putInt("state", 0);
-            		eDrcom.commit();
-            		switchState(pDrcom.getInt("state",-1));
+        			showToast(R.string.need_logout);
+        		}else{
+        			Intent iSetting = new Intent();
+        			iSetting.setClass(Drcom.this, Setting.class);
+        			startActivity(iSetting);
         		}
-        		Intent iSetting = new Intent();
-        		iSetting.setClass(Drcom.this, Setting.class);
-        		startActivity(iSetting);
         	}
         });
         
         //call About Activity
+        Button bAbout=(Button)findViewById(R.id.about);
         bAbout.setOnClickListener(new OnClickListener() {
         	@Override
         	public void onClick(View v){
@@ -127,6 +122,9 @@ public class Drcom extends Activity {
     }
     
     //notification 
+	private NotificationManager mDrcom; 
+	private int iDrcom; 
+	private Notification nDrcom; 
     protected void showNotification() {
     	mDrcom = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     	nDrcom = new Notification(R.drawable.icon, "Dr.com", System.currentTimeMillis());
@@ -135,22 +133,27 @@ public class Drcom extends Activity {
     	mDrcom.notify( iDrcom, nDrcom); 
     }
     
+    //showToast
+    public void showToast(int toastId){
+    	Toast.makeText( this,getString(toastId),Toast.LENGTH_LONG).show();
+    }
+    
     //switch state
     public void switchState(int state){
         switch(state){
-        case -1:Toast.makeText( this,"需要设置",Toast.LENGTH_LONG).show();
+        case -1:showToast(R.string.need_setting);
         		bLogin.setEnabled(false);
         		bLogout.setEnabled(false);
         		break;
-        case 0 :Toast.makeText( this,"已经注销",Toast.LENGTH_LONG).show();
+        case 0 :showToast(R.string.logouted);
 				bLogin.setEnabled(true);
 				bLogout.setEnabled(false);
 				break;
-        case 1 :Toast.makeText( this,"已经登录",Toast.LENGTH_LONG).show();
+        case 1 :showToast(R.string.logined);
 				bLogin.setEnabled(false);
 				bLogout.setEnabled(true);
 				break;
-		default:Toast.makeText( this,"未知错误",Toast.LENGTH_LONG).show();
+		default:showToast(R.string.unknown_error);
 				bLogin.setEnabled(false);
 				bLogout.setEnabled(false);
         }
@@ -212,14 +215,14 @@ public class Drcom extends Activity {
 			}
 			String page = sb.toString();
 			System.out.println(page);
-			Toast.makeText( this,"登录成功",Toast.LENGTH_LONG).show();
+			showToast(R.string.login_success);
 			} finally {
 				if (in != null) {
 					try {
 						in.close();
 					} catch (IOException e) {
 						e.printStackTrace();
-						Toast.makeText( this,"登录失败",Toast.LENGTH_LONG).show();
+						showToast(R.string.login_fail);
 					}
 				}
 				
@@ -278,7 +281,7 @@ public class Drcom extends Activity {
 			}
 			String page = sb.toString();
 			System.out.println(page);
-			Toast.makeText( this,"注销成功",Toast.LENGTH_LONG).show();
+			showToast(R.string.logout_success);
 			//error control
 		} finally {
 			if (in != null) {
@@ -286,7 +289,7 @@ public class Drcom extends Activity {
 					in.close();
 				} catch (IOException e) {
 					e.printStackTrace();
-					Toast.makeText( this,"注销失败",Toast.LENGTH_LONG).show();
+					showToast(R.string.logout_fail);
 				}
 			}
 			
