@@ -55,14 +55,14 @@ public class Setting extends Activity {
         		if((tAddress.toString().equals(""))||
                    (tUser.getText().toString().equals(""))||
                    (tPassword.getText().toString().equals(""))){
-        			Toast.makeText( Setting.this,"输入有空",Toast.LENGTH_LONG).show();
+        			showToast(R.string.input_empty);
         		}else{
         			eDrcom.putString("address", tAddress.getText().toString());
         			eDrcom.putString("user", tUser.getText().toString());
         			eDrcom.putString("password", tPassword.getText().toString());
         			eDrcom.putInt("state", 0);
         			eDrcom.commit();
-        			Toast.makeText( Setting.this,"保存成功",Toast.LENGTH_LONG).show();
+        			showToast(R.string.save_finish);
         		}
         	}
         });
@@ -81,7 +81,7 @@ public class Setting extends Activity {
         		tAddress.setText(pDrcom.getString("address",""));
         	    tUser.setText(pDrcom.getString("user",""));
         	    tPassword.setText(pDrcom.getString("password",""));
-        		Toast.makeText( Setting.this,"清除成功",Toast.LENGTH_LONG).show();
+        	    showToast(R.string.clear_finish);
         	}
         });
         
@@ -95,6 +95,10 @@ public class Setting extends Activity {
         		startActivity(iDrcom);
         	}
         });
- 
+    }
+    
+    //showToast
+    public void showToast(int toastId){
+    	Toast.makeText( this,getString(toastId),Toast.LENGTH_LONG).show();
     }
 }

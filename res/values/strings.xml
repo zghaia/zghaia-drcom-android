@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Dr.com</string>
+    <string name="name">Dr.com for Android</string>
+    <string name="author">By zghaia@gmail.com</string>
+    <string name="version">1.4</string>
     <string name="login">登录</string>
     <string name="logout">注销</string>
     <string name="setting">设置</string>
@@ -11,8 +14,17 @@
     <string name="user">帐户：</string>
     <string name="password">密码：</string>
     <string name="back">返回</string>
-    <string name="name">Dr.com for Android</string>
-    <string name="author">By zghaia@gmail.com</string>
-    <string name="version">Version 1.3</string>
     <string name="update">更新</string>
+    <string name="logined">已经登录</string>
+    <string name="logouted">已经注销</string>
+    <string name="login_success">登录成功</string>
+    <string name="logout_success">注销成功</string>
+    <string name="login_fail">登录失败</string>
+    <string name="logout_fail">注销失败</string>
+    <string name="need_setting">请先设置</string>
+    <string name="need_logout">请先注销</string>
+    <string name="unknown_error">未知错误</string>
+    <string name="save_finish">保存完成</string>
+    <string name="input_empty">输入有空</string>
+    <string name="clear_finish">清除完成</string>
 </resources>
