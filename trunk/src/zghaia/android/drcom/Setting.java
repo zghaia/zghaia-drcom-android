@@ -1,37 +1,28 @@
-/*
-  Copyright (C) <2011> <Dr.com for Android Authors :zghaia@gmail.com>
-                          All rights reserved.
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-               GNU General Public License for more details 
-                      <./GNU GENERAL PUBLIC LICENSE>
- */
-
 package zghaia.android.drcom;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.Toast;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.content.SharedPreferences;
+import android.widget.Toast;
 
 public class Setting extends Activity {
 	private EditText tAddress,tUser,tPassword;
-	private Button bSave,bClear; 
+	private Button bSave,bClear,bBack; 
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting);
+        
+        //init before using it
+        bSave=(Button)findViewById(R.id.save);
+        bClear=(Button)findViewById(R.id.clear);
+        bBack=(Button)findViewById(R.id.back);
         
         //set SharedPreferences object for store and get data
         final SharedPreferences pDrcom = getSharedPreferences("Drcom",0);
@@ -48,7 +39,6 @@ public class Setting extends Activity {
         tPassword.setText(pDrcom.getString("password",""));
         
         // save address,user,password data
-        bSave=(Button)findViewById(R.id.save);
         bSave.setOnClickListener(new OnClickListener() {
         	@Override
         	public void onClick(View v){
@@ -68,7 +58,6 @@ public class Setting extends Activity {
         });
         
         // clear address,user,password data
-        bClear=(Button)findViewById(R.id.clear);
         bClear.setOnClickListener(new OnClickListener() {
         	@Override
         	public void onClick(View v){
@@ -86,7 +75,6 @@ public class Setting extends Activity {
         });
         
         //back Dr.com Activity
-        Button bBack=(Button)findViewById(R.id.back);
         bBack.setOnClickListener(new OnClickListener() {
         	@Override
         	public void onClick(View v){
