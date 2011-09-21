@@ -1,30 +1,4 @@
-/*
-  Copyright (C) <2011> <Dr.com for Android Authors :zghaia@gmail.com>
-                          All rights reserved.
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-               GNU General Public License for more details 
-                      <./GNU GENERAL PUBLIC LICENSE>
- */
-
 package zghaia.android.drcom;
-
-import android.app.Activity;
-import android.os.Bundle;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.widget.Toast;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,16 +19,36 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.Toast;
+
 public class Drcom extends Activity {
-	private Button bLogin,bLogout;
-	private final SharedPreferences pDrcom = getSharedPreferences("Drcom",0);
-	private final SharedPreferences.Editor eDrcom=pDrcom.edit();
-	
+	private Button bLogin,bLogout,bSetting,bAbout;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+        //init Button must before use it
+        bLogin=(Button)findViewById(R.id.login);
+        bLogout=(Button)findViewById(R.id.logout);
+        bSetting=(Button)findViewById(R.id.setting);
+        bAbout=(Button)findViewById(R.id.about);
+        
+        //get Dr.com setting object can't put out off the onCreate function
+    	final SharedPreferences pDrcom = getSharedPreferences("Drcom",0);
+    	final SharedPreferences.Editor eDrcom=pDrcom.edit();
         
         //get the Dr.com data
         final String address=pDrcom.getString("address","");
@@ -64,83 +58,8 @@ public class Drcom extends Activity {
         //Notification Icon will appear in Status bar
         showNotification();
         
-        // state
-        switchState(pDrcom.getInt("state",-1));
-        
-        //call Login function
-        bLogin=(Button)findViewById(R.id.login);
-        bLogin.setOnClickListener(new OnClickListener() {
-        	@Override
-        	public void onClick(View v){
-        		String server="http://"+address+"/";
-        		login(server,user,password);	
-        		eDrcom.putInt("state", 1);
-        		eDrcom.commit();
-        		switchState(pDrcom.getInt("state",-1));
-        	}
-        });
-        
-        //call Logout function
-        bLogout=(Button)findViewById(R.id.logout);
-        bLogout.setOnClickListener(new OnClickListener() {
-        	@Override
-        	public void onClick(View v){
-        		String server="http://"+address+"/F.htm";
-        		logout(server);
-        		eDrcom.putInt("state", 0);
-        		eDrcom.commit();
-        		switchState(pDrcom.getInt("state",-1));
-        	}
-        });
-        
-        //call Setting Activity
-        Button bSetting=(Button)findViewById(R.id.setting);
-        bSetting.setOnClickListener(new OnClickListener() {
-        	@Override
-        	public void onClick(View v){
-        		if(pDrcom.getInt("state",-1)==1){
-        			showToast(R.string.need_logout);
-        		}else{
-        			Intent iSetting = new Intent();
-        			iSetting.setClass(Drcom.this, Setting.class);
-        			startActivity(iSetting);
-        		}
-        	}
-        });
-        
-        //call About Activity
-        Button bAbout=(Button)findViewById(R.id.about);
-        bAbout.setOnClickListener(new OnClickListener() {
-        	@Override
-        	public void onClick(View v){
-        		Intent iAbout = new Intent();
-        		iAbout.setClass(Drcom.this, About.class);
-        		startActivity(iAbout);
-        	}
-        });
-        
-    }
-    
-    //notification 
-	private NotificationManager mDrcom; 
-	private int iDrcom; 
-	private Notification nDrcom; 
-    protected void showNotification() {
-    	mDrcom = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-    	nDrcom = new Notification(R.drawable.icon, "Dr.com", System.currentTimeMillis());
-    	PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(this, Drcom.class), 0);
-    	nDrcom.setLatestEventInfo(this, "Dr.com", "Dr.com", intent);
-    	mDrcom.notify( iDrcom, nDrcom); 
-    }
-    
-    //showToast
-    public void showToast(int toastId){
-    	Toast.makeText( this,getString(toastId),Toast.LENGTH_LONG).show();
-    }
-    
-    //switch state
-    public void switchState(int state){
-        switch(state){
+        //showState
+        switch(pDrcom.getInt("state",-1)){
         case -1:showToast(R.string.need_setting);
         		bLogin.setEnabled(false);
         		bLogout.setEnabled(false);
@@ -157,6 +76,74 @@ public class Drcom extends Activity {
 				bLogin.setEnabled(false);
 				bLogout.setEnabled(false);
         }
+        
+        //call Login function
+        bLogin.setOnClickListener(new OnClickListener() {
+        	@Override
+        	public void onClick(View v){
+        		String server="http://"+address+"/";
+        		login(server,user,password);	
+        		eDrcom.putInt("state", 1);
+        		eDrcom.commit();
+        		bLogin.setEnabled(false);
+				bLogout.setEnabled(true);
+        	}
+        });
+        
+        //call Logout function
+        bLogout.setOnClickListener(new OnClickListener() {
+        	@Override
+        	public void onClick(View v){
+        		String server="http://"+address+"/F.htm";
+        		logout(server);
+        		eDrcom.putInt("state", 0);
+        		eDrcom.commit();
+        		bLogin.setEnabled(true);
+				bLogout.setEnabled(false);
+        	}
+        });
+        
+        //call Setting Activity
+        bSetting.setOnClickListener(new OnClickListener() {
+        	@Override
+        	public void onClick(View v){
+        		if(pDrcom.getInt("state",-1)==1){
+        			showToast(R.string.need_logout);
+        		}else{
+        			Intent iSetting = new Intent();
+        			iSetting.setClass(Drcom.this, Setting.class);
+        			startActivity(iSetting);
+        		}
+        	}
+        });
+        
+        //call About Activity
+        bAbout.setOnClickListener(new OnClickListener() {
+        	@Override
+        	public void onClick(View v){
+        		Intent iAbout = new Intent();
+        		iAbout.setClass(Drcom.this, About.class);
+        		startActivity(iAbout);
+        	}
+        }); 
+        
+    }
+    
+    //notification 
+	private NotificationManager mDrcom; 
+	private int iDrcom; 
+	private Notification nDrcom; 
+	public void showNotification() {
+    	mDrcom = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+    	nDrcom = new Notification(R.drawable.icon, "Dr.com", System.currentTimeMillis());
+    	PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(this, Drcom.class), 0);
+    	nDrcom.setLatestEventInfo(this, "Dr.com", "Dr.com", intent);
+    	mDrcom.notify( iDrcom, nDrcom); 
+    }
+    
+    //showToast
+    public void showToast(int toastId){
+    	Toast.makeText( this,getString(toastId),Toast.LENGTH_LONG).show();
     }
     
     // login function

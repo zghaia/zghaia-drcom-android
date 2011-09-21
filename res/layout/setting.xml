@@ -1,9 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <AbsoluteLayout android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
-        <EditText android:layout_width="fill_parent" android:layout_x="0dip" android:layout_y="5dip" android:layout_height="60dip" android:id="@+id/address" android:hint="@string/address"></EditText>
-        <EditText android:layout_width="fill_parent" android:layout_height="60dip" android:layout_x="0dip" android:layout_y="64dip" android:id="@+id/user" android:hint="@string/user"></EditText>
-        <EditText android:layout_width="fill_parent" android:layout_height="60dip" android:layout_x="0dip" android:layout_y="129dip" android:id="@+id/password" android:hint="@string/password" android:password="true"></EditText>
-        <Button android:layout_height="60dip" android:layout_x="-5dip" android:layout_y="190dip" android:layout_width="160dip" android:id="@+id/clear" android:text="@string/clear"></Button>
-        <Button android:layout_width="160dip" android:layout_height="60dip" android:layout_x="166dip" android:layout_y="190dip" android:id="@+id/save" android:text="@string/save"></Button>
-        <Button android:layout_width="fill_parent" android:layout_height="60dip" android:layout_x="-1dip" android:layout_y="248dip" android:id="@+id/back" android:text="@string/back"></Button>
-    </AbsoluteLayout>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent">
+    <EditText android:id="@+id/address" 
+    android:layout_width="fill_parent" 
+    android:layout_x="0dip" android:layout_y="5dip" 
+    android:layout_height="60dip" 
+    android:hint="@string/address">
+    </EditText>
+    <EditText android:id="@+id/user" 
+    android:layout_width="fill_parent" 
+    android:layout_height="60dip" 
+    android:layout_x="0dip" 
+    android:layout_y="64dip" 
+    android:hint="@string/user">
+    </EditText>
+    <EditText android:id="@+id/password" 
+    android:layout_width="fill_parent" 
+    android:layout_height="60dip" 
+    android:layout_x="0dip" 
+    android:layout_y="129dip" 
+    android:hint="@string/password" 
+    android:password="true">
+    </EditText>
+    <Button android:id="@+id/clear" 
+    android:layout_height="60dip" 
+    android:layout_x="-5dip" 
+    android:layout_y="190dip" 
+    android:layout_width="160dip" 
+    android:text="@string/clear">
+    </Button>
+    <Button android:id="@+id/save" 
+    android:layout_width="160dip" 
+    android:layout_height="60dip" 
+    android:layout_x="166dip" 
+    android:layout_y="190dip" 
+    android:text="@string/save">
+    </Button>
+    <Button android:id="@+id/back" 
+    android:layout_width="fill_parent" 
+    android:layout_height="60dip" 
+    android:layout_x="-1dip" 
+    android:layout_y="248dip" 
+    android:text="@string/back">
+    </Button>
+</AbsoluteLayout>

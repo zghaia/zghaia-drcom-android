@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Dr.com</string>
+    <string name="version">1.4</string>
     <string name="name">Dr.com for Android</string>
     <string name="author">By zghaia@gmail.com</string>
-    <string name="version">1.4</string>
+	<string name="version_full">Version： 1.4</string>
     <string name="login">登录</string>
     <string name="logout">注销</string>
     <string name="setting">设置</string>
