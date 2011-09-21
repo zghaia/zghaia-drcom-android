@@ -6,14 +6,17 @@
     android:layout_width="fill_parent" 
     android:layout_x="0dip" android:layout_y="5dip" 
     android:layout_height="60dip" 
-    android:hint="@string/address">
+    android:hint="@string/address" 
+    android:singleLine="true">
     </EditText>
     <EditText android:id="@+id/user" 
     android:layout_width="fill_parent" 
     android:layout_height="60dip" 
     android:layout_x="0dip" 
     android:layout_y="64dip" 
-    android:hint="@string/user">
+    android:hint="@string/user" 
+    android:numeric="decimal" 
+    android:singleLine="true">
     </EditText>
     <EditText android:id="@+id/password" 
     android:layout_width="fill_parent" 
@@ -21,7 +24,9 @@
     android:layout_x="0dip" 
     android:layout_y="129dip" 
     android:hint="@string/password" 
-    android:password="true">
+    android:password="true" 
+    android:numeric="decimal" 
+    android:singleLine="true">
     </EditText>
     <Button android:id="@+id/clear" 
     android:layout_height="60dip" 

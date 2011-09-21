@@ -17,5 +17,11 @@
         </activity>
 		<activity android:name="Setting"></activity>
 		<activity android:name="About"></activity>
+		<receiver android:name=".Shut" >
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.ACTION_SHUTDOWN" />
+            </intent-filter>
+        </receiver>
+        <service android:name=".Alert"></service>
     </application>
 </manifest>

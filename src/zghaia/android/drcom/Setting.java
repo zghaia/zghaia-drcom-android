@@ -1,3 +1,17 @@
+/*
+  Copyright (C) <2011> <Dr.com for Android Authors :zghaia@gmail.com>
+                          All rights reserved.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+               GNU General Public License for more details 
+                      <./GNU GENERAL PUBLIC LICENSE>
+ */
+
 package zghaia.android.drcom;
 
 import android.app.Activity;
@@ -13,6 +27,7 @@ import android.widget.Toast;
 public class Setting extends Activity {
 	private EditText tAddress,tUser,tPassword;
 	private Button bSave,bClear,bBack; 
+	
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,4 +104,5 @@ public class Setting extends Activity {
     public void showToast(int toastId){
     	Toast.makeText( this,getString(toastId),Toast.LENGTH_LONG).show();
     }
+   
 }
